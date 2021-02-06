@@ -1,0 +1,14 @@
+.map {
+    width: 100%;
+    height: 400%;
+  }
+  
+  .grid {
+    display: flex;
+    background-color: darkblue;
+  }
+
+  .places {
+    width: 40%;
+    height: 100%;
+  }
