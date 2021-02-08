@@ -3,22 +3,29 @@ import React, { useState } from "react";
 import Card from "../Shared/Card";
 import Button from "../Shared/Button";
 import Map from "./Map";
+import Input from "../Shared/Input";
 import "./Home.css";
 
+import mapboxgl from "mapbox-gl";
+import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
+import MapboxDraw from "@mapbox/mapbox-gl-draw";
+
+const initialValue = {
+  location: "",
+  lat: "",
+  lng: "",
+};
+
 const Home = (props) => {
-  const [formData, setFormData] = useState({
-    location: "",
-    lat: "",
-    lng: "",
-  });
+  const [formData, setFormData] = useState(initialValue);
   const [places, setPlaces] = useState([]);
-  const [newPlace, setNewPlace] = useState({
-    location: "Pune",
-    lat: "18.5245649",
-    lng: "73.7228812",
-  });
-  const [isSubmitMode, setIsSubmitMode] = useState(false);
-  const [pathInfo, setPathInfo] = useState({});
+  // const [newPlace, setNewPlace] = useState({
+  //   location: "Pune",
+  //   lat: "18.5245649",
+  //   lng: "73.7228812",
+  // });
+  const [showRoute, setShowRoute] = useState(false);
+  // const [pathInfo, setPathInfo] = useState({});
   const [coordinates, setCoordinates] = useState([]);
 
   const handleChange = (event) => {
@@ -33,83 +40,101 @@ const Home = (props) => {
   const handleSubmit = async (event) => {
     event.preventDefault();
 
-    if (isSubmitMode) {
-      //   const responseData = await fetch(
-      //     `https://api.mapbox.com/directions/v5/mapbox/cycling/${places[0].lat},${places[0].lng};${places[1].lat},${places[0].lng}?geometries=geojson&access_token=${process.env.REACT_APP_MAPBOX_ACCESS_TOKEN}`
-      //   );
-      //   const data = await responseData.json();
-      //   setPathInfo(data);
-      //   var coords = jsonResponse.routes[0].geometry;
-      //   setCoordinates(coords);
-      // var url =
-      //   `https://api.mapbox.com/directions/v5/mapbox/cycling/${places[0].lat},${places[0].lng};${places[1].lat},${places[1].lng}` +
-      //   "?geometries=geojson&steps=true&access_token=" +
-      //   process.env.REACT_APP_MAPBOX_ACCESS_TOKEN;
-
-      // const responseData = await fetch(url);
-      // const data = await responseData.json();
-
-      // //   var req = new XMLHttpRequest();
-      // //   req.responseType = "json";
-      // //   req.open("GET", url, true);
-      // //   req.onload = function () {
-      // //     var jsonResponse = req.response;
-      // //     // var distance = jsonResponse.routes[0].distance*0.001;
-      // //     // var duration = jsonResponse.routes[0].duration/60;
-      // //     // var steps = jsonResponse.routes[0].legs[0].steps;
-      // var coords = data.routes[0].geometry;
-      // //     //  console.log(steps);
-      // //     console.log(coords);
-      // console.log(coords);
-      // setCoordinates(coords);
-      //     //   console.log(data);
-      //     return;
-      //   };
-      return;
-    }
-
-    setNewPlace(formData);
+    // if (isSubmitMode) {
+    //   //   setNewPlace(formData);
+    //   console.log(formData);
+    //   //   setCoordinates((prevVal) => {
+    //   //     return [...prevVal, `${(formData.lng, formData.lat)}`];
+    //   //   });
+    // }
     setPlaces((prevVal) => {
       return [...prevVal, formData];
     });
+    setFormData(initialValue);
+  };
 
-    if (places.length == 2) setIsSubmitMode(true);
+  const showPath = (event) => {
+    const arr = [];
+
+    for (let i = 0; i < 2; i++) {
+      const temp = "" + places[i].lng + "," + places[i].lat;
+      arr.push(temp);
+    }
+
+    setCoordinates(arr);
+    setShowRoute(true);
+  };
+
+  const clearInput = (props) => {
+    setFormData(initialValue);
+    setPlaces([]);
+    setCoordinates([]);
+    setShowRoute(false);
   };
 
   return (
     <Card>
       <form onSubmit={handleSubmit}>
-        <label htmlFor="location">Location Name</label>
+        {/* <label htmlFor="location">Location Name</label>
         <input
           id="location"
           placeholder="Location"
           value={formData.location}
           onChange={handleChange}
           type="text"
+        /> */}
+        <Input
+          id="location"
+          labelText="Location Name"
+          placeholder="Location"
+          value={formData.location}
+          onChange={handleChange}
         />
-        <label htmlFor="lat">Enter Lattitude</label>
+        {/* <label htmlFor="lat">Enter Lattitude</label>
         <input
           id="lat"
           placeholder="Lat"
           value={formData.lat}
           onChange={handleChange}
           type="text"
+        /> */}
+        <Input
+          id="lat"
+          labelText="Enter Lattitude"
+          placeholder="Lat"
+          value={formData.lat}
+          onChange={handleChange}
         />
-        <label htmlFor="lng">Enter Longitude</label>
+        {/* <label htmlFor="lng">Enter Longitude</label>
         <input
           id="lng"
           placeholder="Lon"
           value={formData.lng}
           onChange={handleChange}
           type="text"
+        /> */}
+        <Input
+          id="lng"
+          labelText="Enter Longitude"
+          placeholder="Lon"
+          value={formData.lng}
+          onChange={handleChange}
         />
-        <Button type="submit">{places.length >= 2 ? "SUBMIT" : "ADD"}</Button>
+        {places.length < 2 && (
+          <Button className="btn" type="submit">
+            ADD
+          </Button>
+        )}
       </form>
+
       <Map
-        pathInfo={pathInfo}
+        // pathInfo={pathInfo}
         places={places}
-        newPlace={newPlace}
+        // newPlace={newPlace}
         coordinates={coordinates}
+        showRoute={showRoute}
+        showPath={showPath}
+        clearInput={clearInput}
       />
     </Card>
   );
