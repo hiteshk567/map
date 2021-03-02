@@ -5,8 +5,6 @@ import LocationInfo from "./LocationInfo";
 import "./Map.css";
 
 const Map = ({ places, handleEdit, clearInput, showPath, mapContainerRef }) => {
-  console.log(places);
-
   return (
     <div className="grid">
       <div className="places">

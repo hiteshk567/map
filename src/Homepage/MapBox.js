@@ -24,8 +24,10 @@ export const showRouteMap = (coordinates, mapContainerRef) => {
       style: "mapbox://styles/mapbox/streets-v11", // stylesheet location
       // center: [73.85800431423223, 18.536033374699272], // starting position [lng, lat]
       center: tempArr,
-      zoom: 5, // starting zoom
+      zoom: 7, // starting zoom
     });
+
+    let marker = new mapboxgl.Marker().setLngLat(tempArr).addTo(map);
 
     function updateRoute(newCoords) {
       // removeRoute(); // overwrite any existing layers
@@ -45,8 +47,11 @@ export const showRouteMap = (coordinates, mapContainerRef) => {
       req.open("GET", url, true);
       req.onload = function () {
         var jsonResponse = req.response;
+        if (jsonResponse.code === "NoRoute") {
+          console.log("No route found");
+          return;
+        }
         var coords = jsonResponse.routes[0].geometry;
-
         addRoute(coords);
       };
       req.send();
@@ -70,7 +75,7 @@ export const showRouteMap = (coordinates, mapContainerRef) => {
           "line-cap": "round",
         },
         paint: {
-          "line-color": "#1db7dd",
+          "line-color": "#222224",
           "line-width": 8,
           "line-opacity": 0.8,
         },

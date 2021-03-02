@@ -68,13 +68,12 @@ const Home = (props) => {
   };
 
   useEffect(() => {
-    console.log("initial map");
     loadInitialMap();
   }, []);
 
   return (
     <Card>
-      <form onSubmit={handleSubmit}>
+      <form onSubmit={handleSubmit} autoComplete="off">
         <Input
           id="location"
           labelText="Location Name"
