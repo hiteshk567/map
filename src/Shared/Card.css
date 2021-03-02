@@ -1,15 +1,18 @@
 .card {
     position: relative;
     margin: 0;
+    margin-bottom: 1.8rem;
     box-shadow: 0 2px 8px rgba(0, 0, 0, 0.26);
-    border-radius: 6px;
-    padding: 1rem;
+    border-radius: 1.5rem;
+    /* padding: 1rem; */
     overflow: hidden;
-    background: darkblue;
+    background: #074e67;
     color: white;
     width: 80%;
+    height: 70%;
     left: 50%;
     right: 50%;
     transform: translate(-50%);
+
   }
   

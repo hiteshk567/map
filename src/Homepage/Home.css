@@ -12,4 +12,6 @@ form {
     display: flex;
     flex-direction: row;
     justify-content: space-around;
+    height: 100px;
+    align-items: center;
 }

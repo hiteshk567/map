@@ -1,0 +1,38 @@
+.single_location {
+    display: flex;
+    flex-direction: column;
+    
+    justify-items:left;
+    font-size: 0.8rem;
+    margin-bottom: 1.5rem;
+}
+
+.location{
+    /* width: 25%; */
+}
+
+.lat{
+    /* width: 35%; */
+    font-weight: 650;
+    word-wrap:break-word;
+    margin-right: 1.2rem;
+    text-align: right;
+}
+
+.lng{
+    /* width: 35%; */
+    font-weight: 650;
+    word-wrap:break-word;
+    text-align: right;
+}
+
+.editInput {
+    width: 30%;
+}
+
+@media (min-width: 768px) {
+    .single_location {
+        flex-direction: row;
+        justify-content: space-between;
+    }
+}

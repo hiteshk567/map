@@ -1,14 +1,11 @@
-import React, { useState } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Card from "../Shared/Card";
 import Button from "../Shared/Button";
 import Map from "./Map";
 import Input from "../Shared/Input";
 import "./Home.css";
-
-import mapboxgl from "mapbox-gl";
-import MapboxGeocoder from "@mapbox/mapbox-gl-geocoder";
-import MapboxDraw from "@mapbox/mapbox-gl-draw";
+import { loadInitialMap, showRouteMap } from "./MapBox";
 
 const initialValue = {
   location: "",
@@ -19,14 +16,9 @@ const initialValue = {
 const Home = (props) => {
   const [formData, setFormData] = useState(initialValue);
   const [places, setPlaces] = useState([]);
-  // const [newPlace, setNewPlace] = useState({
-  //   location: "Pune",
-  //   lat: "18.5245649",
-  //   lng: "73.7228812",
-  // });
+  const mapContainerRef = useRef();
   const [showRoute, setShowRoute] = useState(false);
-  // const [pathInfo, setPathInfo] = useState({});
-  const [coordinates, setCoordinates] = useState([]);
+  // const [coordinates, setCoordinates] = useState([]);
 
   const handleChange = (event) => {
     setFormData((prevVal) => {
@@ -37,16 +29,19 @@ const Home = (props) => {
     });
   };
 
+  const editPlaces = (event, index, elem) => {
+    const newPlace = [...places];
+    newPlace[index][elem] = event.target.value;
+
+    setPlaces(newPlace);
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!formData.location || !formData.lat || !formData.lng) {
+      return;
+    }
 
-    // if (isSubmitMode) {
-    //   //   setNewPlace(formData);
-    //   console.log(formData);
-    //   //   setCoordinates((prevVal) => {
-    //   //     return [...prevVal, `${(formData.lng, formData.lat)}`];
-    //   //   });
-    // }
     setPlaces((prevVal) => {
       return [...prevVal, formData];
     });
@@ -61,28 +56,25 @@ const Home = (props) => {
       arr.push(temp);
     }
 
-    setCoordinates(arr);
     setShowRoute(true);
+
+    showRouteMap(arr, mapContainerRef);
   };
 
   const clearInput = (props) => {
     setFormData(initialValue);
     setPlaces([]);
-    setCoordinates([]);
     setShowRoute(false);
   };
+
+  useEffect(() => {
+    console.log("initial map");
+    loadInitialMap();
+  }, []);
 
   return (
     <Card>
       <form onSubmit={handleSubmit}>
-        {/* <label htmlFor="location">Location Name</label>
-        <input
-          id="location"
-          placeholder="Location"
-          value={formData.location}
-          onChange={handleChange}
-          type="text"
-        /> */}
         <Input
           id="location"
           labelText="Location Name"
@@ -90,14 +82,6 @@ const Home = (props) => {
           value={formData.location}
           onChange={handleChange}
         />
-        {/* <label htmlFor="lat">Enter Lattitude</label>
-        <input
-          id="lat"
-          placeholder="Lat"
-          value={formData.lat}
-          onChange={handleChange}
-          type="text"
-        /> */}
         <Input
           id="lat"
           labelText="Enter Lattitude"
@@ -105,14 +89,6 @@ const Home = (props) => {
           value={formData.lat}
           onChange={handleChange}
         />
-        {/* <label htmlFor="lng">Enter Longitude</label>
-        <input
-          id="lng"
-          placeholder="Lon"
-          value={formData.lng}
-          onChange={handleChange}
-          type="text"
-        /> */}
         <Input
           id="lng"
           labelText="Enter Longitude"
@@ -126,15 +102,13 @@ const Home = (props) => {
           </Button>
         )}
       </form>
-
       <Map
-        // pathInfo={pathInfo}
-        places={places}
-        // newPlace={newPlace}
-        coordinates={coordinates}
         showRoute={showRoute}
-        showPath={showPath}
         clearInput={clearInput}
+        places={places}
+        showPath={showPath}
+        mapContainerRef={mapContainerRef}
+        handleEdit={editPlaces}
       />
     </Card>
   );
